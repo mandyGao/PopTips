@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" 
+    android:layout_gravity="center"
+    >
+
+    <FrameLayout
+        android:id="@+id/poptip_contentholder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#ffcc0000"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:scrollbars="none" >
+
+        <TextView
+            android:id="@+id/poptip_contenttv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+          />
+    </FrameLayout>
+    
+     <com.mindpin.superpoptips.ArrowView
+         android:id="@+id/arrowView"
+         android:layout_width="20dip"
+         android:layout_height="14dip"
+         />
+
+
+    
+    </RelativeLayout>

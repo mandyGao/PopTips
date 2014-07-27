@@ -1,0 +1,10 @@
+<resources>
+    <dimen name="bg_tooltip_padding_top">4dp</dimen>
+    <dimen name="bg_tooltip_padding_left">5dp</dimen>
+    <dimen name="bg_tooltip_padding_right">5dp</dimen>
+    <dimen name="bg_tooltip_padding_bottom">10dp</dimen>
+    <dimen name="bg_tooltip_pointer_padding_bottom">8dp</dimen>
+    <dimen name="tooltip_width">100dp</dimen>
+    <dimen name="tooltip_height">50dp</dimen>
+    <dimen name="arrow_width">30dp</dimen>
+</resources>
