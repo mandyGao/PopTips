@@ -119,116 +119,126 @@ public class GaoActivity extends Activity implements View.OnClickListener,
 		}, 1500);
 		//
 	}
-
+    //添加一个背景为红色的泡泡浮动框
 	private void addRedPopTipView() {
 
-		mRedPopTipView = mPopTipFrameLayout
-				.showPopTipForView(findViewById(R.id.activity_main_redtv));
-		mRedPopTipView.setOnPopTipViewClickedListener(this);
-		mRedPopTipView.setWidth(100);
-		mRedPopTipView.setHeight(50);
-		mRedPopTipView.setArrowLocation(ArrowLocation.top_left);
-		mRedPopTipView.setArrowWidth(30);
+		mRedPopTipView = new PopTipView(this, findViewById(R.id.activity_main_redtv));
+		
+		Log.v("mandy", "after show");
+		mRedPopTipView.set_pop_click_listener(this);
+		mRedPopTipView.set_width(100);
+		mRedPopTipView.set_height(50);
+		mRedPopTipView.set_arrow_location(ArrowLocation.top_left);
+		mRedPopTipView.set_arrow_width(30);
+		mRedPopTipView.set_arrow_point_offset(0, 0);
 		// mRedPopTipView.setArrowPointOffset(50,50);
-		mRedPopTipView.setPopText("A beautiful Button");
-		mRedPopTipView.setBackgroud(getResources().getColor(R.color.holo_red));
+		mRedPopTipView.set_pop_text("A beautiful Button");
+		mRedPopTipView.set_backgroud(getResources().getColor(R.color.holo_red));
+		mPopTipFrameLayout.show(mRedPopTipView);
 
 	}
 
 	private void addGreenPopTipView() {
-
-		mGreenPopTipView = mPopTipFrameLayout
-				.showPopTipForView(findViewById(R.id.activity_main_greentv));
-		mGreenPopTipView.setOnPopTipViewClickedListener(this);
-		mGreenPopTipView.setWidth(100);
-		mGreenPopTipView.setHeight(50);
-		mGreenPopTipView.setArrowLocation(ArrowLocation.top_right);
-		mGreenPopTipView.setArrowWidth(30);
-		mGreenPopTipView.setPopText("Another beautiful Button!");
-		mGreenPopTipView.setBackgroud(getResources().getColor(
+		mGreenPopTipView = new PopTipView(this, findViewById(R.id.activity_main_greentv));
+		mGreenPopTipView.set_pop_click_listener(this);
+		mGreenPopTipView.set_width(100);
+		mGreenPopTipView.set_height(50);
+		mGreenPopTipView.set_arrow_location(ArrowLocation.top_right);
+		mGreenPopTipView.set_arrow_width(30);
+		mGreenPopTipView.set_pop_text("Another beautiful Button!");
+		mGreenPopTipView.set_backgroud(getResources().getColor(
 				R.color.holo_green));
+		mPopTipFrameLayout
+		.show(mGreenPopTipView);
+		
 
 	}
 
 	private void addBluePopTipView() {
 
-		mBluePopTipView = mPopTipFrameLayout
-				.showPopTipForView(findViewById(R.id.activity_main_bluetv));
-		mBluePopTipView.setOnPopTipViewClickedListener(this);
+		mBluePopTipView = new PopTipView(this, findViewById(R.id.activity_main_bluetv));
+//		mBluePopTipView = mPopTipFrameLayout
+//				.showPopTipForView(findViewById(R.id.activity_main_bluetv));
+		mBluePopTipView.set_pop_click_listener(this);
 
-		mBluePopTipView.setWidth(100);
-		mBluePopTipView.setHeight(70);
-		mBluePopTipView.setArrowLocation(ArrowLocation.left_top);
-		mBluePopTipView.setArrowWidth(30);
-		mBluePopTipView.setPopText("Moarrrr buttons!");
+		mBluePopTipView.set_width(100);
+		mBluePopTipView.set_height(70);
+		mBluePopTipView.set_arrow_location(ArrowLocation.left_top);
+		mBluePopTipView.set_arrow_width(30);
+		mBluePopTipView.set_pop_text("Moarrrr buttons!");
 		mBluePopTipView
-				.setBackgroud(getResources().getColor(R.color.holo_blue));
-
+				.set_backgroud(getResources().getColor(R.color.holo_blue));
+		mPopTipFrameLayout.show(mBluePopTipView);
 	}
 
 	private void addBlueDarkPopTipView() {
+		mBlueDarkPopTipView = new PopTipView(this, findViewById(R.id.activity_main_orangetv));
+//		mBlueDarkPopTipView = mPopTipFrameLayout
+//				.showPopTipForView(findViewById(R.id.activity_main_orangetv));
+		mBlueDarkPopTipView.set_pop_click_listener(this);
 
-		mBlueDarkPopTipView = mPopTipFrameLayout
-				.showPopTipForView(findViewById(R.id.activity_main_orangetv));
-		mBlueDarkPopTipView.setOnPopTipViewClickedListener(this);
-
-		mBlueDarkPopTipView.setWidth(100);
-		mBlueDarkPopTipView.setHeight(70);
-		mBlueDarkPopTipView.setArrowLocation(ArrowLocation.top);
-		mBlueDarkPopTipView.setArrowWidth(30);
-		mBlueDarkPopTipView.setPopText("bule dark!");
-		mBlueDarkPopTipView.setBackgroud(getResources().getColor(
+		mBlueDarkPopTipView.set_width(100);
+		mBlueDarkPopTipView.set_height(70);
+		mBlueDarkPopTipView.set_arrow_location(ArrowLocation.top);
+		mBlueDarkPopTipView.set_arrow_width(30);
+		mBlueDarkPopTipView.set_pop_text("bule dark!");
+		mBlueDarkPopTipView.set_backgroud(getResources().getColor(
 				R.color.holo_blue_bright));
+		mPopTipFrameLayout.show(mBlueDarkPopTipView);
 
 	}
 
 	private void addGreenDarkPopTipView() {
+		mGreenDarkPopTipView = new PopTipView(this, findViewById(R.id.activity_main_orangetv));
+//		mGreenDarkPopTipView = mPopTipFrameLayout
+//				.showPopTipForView(findViewById(R.id.activity_main_orangetv));
+		mGreenDarkPopTipView.set_pop_click_listener(this);
 
-		mGreenDarkPopTipView = mPopTipFrameLayout
-				.showPopTipForView(findViewById(R.id.activity_main_orangetv));
-		mGreenDarkPopTipView.setOnPopTipViewClickedListener(this);
-
-		mGreenDarkPopTipView.setWidth(100);
-		mGreenDarkPopTipView.setHeight(70);
-		mGreenDarkPopTipView.setArrowLocation(ArrowLocation.right_top);
-		mGreenDarkPopTipView.setArrowWidth(30);
-		mGreenDarkPopTipView.setPopText("green dark!");
-		mGreenDarkPopTipView.setBackgroud(getResources().getColor(
+		mGreenDarkPopTipView.set_width(100);
+		mGreenDarkPopTipView.set_height(70);
+		mGreenDarkPopTipView.set_arrow_location(ArrowLocation.right_top);
+		mGreenDarkPopTipView.set_arrow_width(30);
+		mGreenDarkPopTipView.set_pop_text("green dark!");
+		mGreenDarkPopTipView.set_backgroud(getResources().getColor(
 				R.color.holo_green_dark));
 
+		mPopTipFrameLayout.show(mGreenDarkPopTipView);
 	}
 
 	private void addPurplePopTipView() {
 
-		mPurplePopTipView = mPopTipFrameLayout
-				.showPopTipForView(findViewById(R.id.activity_main_purpletv));
-		mPurplePopTipView.setOnPopTipViewClickedListener(this);
-		mPurplePopTipView.setWidth(100);
-		mPurplePopTipView.setHeight(70);
-		mPurplePopTipView.setArrowLocation(ArrowLocation.bottom);
-		mPurplePopTipView.setArrowWidth(30);
+		mPurplePopTipView = new PopTipView(this, findViewById(R.id.activity_main_purpletv));
+//		mPurplePopTipView = mPopTipFrameLayout
+//				.showPopTipForView(findViewById(R.id.activity_main_purpletv));
+		mPurplePopTipView.set_pop_click_listener(this);
+		mPurplePopTipView.set_width(100);
+		mPurplePopTipView.set_height(70);
+		mPurplePopTipView.set_arrow_location(ArrowLocation.bottom);
+		mPurplePopTipView.set_arrow_width(30);
+		mPurplePopTipView.set_arrow_point_offset(-50, 0);
 		// mPurplePopTipView.setPopText("Moarrrr buttons!");
-		mPurplePopTipView.setContentView(LayoutInflater.from(this).inflate(
+		mPurplePopTipView.set_content_view(LayoutInflater.from(this).inflate(
 				R.layout.custom_poptip, null));
-		mPurplePopTipView.setBackgroud(getResources().getColor(
+		mPurplePopTipView.set_backgroud(getResources().getColor(
 				R.color.holo_purple));
-
+		mPopTipFrameLayout.show(mPurplePopTipView);
 	}
 
 	private void addOrangePopTipView() {
 
-		mOrangePopTipView = mPopTipFrameLayout
-				.showPopTipForView(findViewById(R.id.activity_main_orangetv));
-		mOrangePopTipView.setOnPopTipViewClickedListener(this);
+		mOrangePopTipView = new PopTipView(this, findViewById(R.id.activity_main_orangetv));
+//		mOrangePopTipView = mPopTipFrameLayout
+//				.showPopTipForView(findViewById(R.id.activity_main_orangetv));
+		mOrangePopTipView.set_pop_click_listener(this);
 		Log.v("mandy",
 				"dimen: " + getResources().getDimension(R.dimen.arrow_width));
 
-		mOrangePopTipView.setWidth(100);
-		mOrangePopTipView.setHeight(70);
+		mOrangePopTipView.set_width(100);
+		mOrangePopTipView.set_height(70);
 		// mOrangePopTipView.setArrowLocation(ArrowLocation.top);
 		// mOrangePopTipView.setArrowLocation(ArrowLocation.bottom);
 		// mOrangePopTipView.setArrowLocation(ArrowLocation.left);
-		mOrangePopTipView.setArrowLocation(ArrowLocation.bottom_left);
+		mOrangePopTipView.set_arrow_location(ArrowLocation.bottom_left);
 		// mOrangePopTipView.setArrowLocation(ArrowLocation.bottom_right);
 		// mOrangePopTipView.setArrowLocation(ArrowLocation.left_top);
 		// mOrangePopTipView.setArrowLocation(ArrowLocation.left_bottom);
@@ -236,11 +246,12 @@ public class GaoActivity extends Activity implements View.OnClickListener,
 		// mOrangePopTipView.setArrowLocation(ArrowLocation.right_top);
 		// mOrangePopTipView.setArrowLocation(ArrowLocation.right_bottom);
 		// mOrangePopTipView.setArrowLocation(ArrowLocation.right);
-		mOrangePopTipView.setArrowWidth(30);
-		mOrangePopTipView.setPopText("Tap me!");
-		mOrangePopTipView.setBackgroud(getResources().getColor(
+		mOrangePopTipView.set_arrow_width(30);
+		mOrangePopTipView.set_pop_text("Tap me!");
+		mOrangePopTipView.set_backgroud(getResources().getColor(
 				R.color.holo_orange));
-
+		mPopTipFrameLayout.show(mOrangePopTipView);
+		
 	}
 
 	@Override

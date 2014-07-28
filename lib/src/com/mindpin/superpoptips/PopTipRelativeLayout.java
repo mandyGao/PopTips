@@ -20,10 +20,7 @@ public class PopTipRelativeLayout extends RelativeLayout {
         super(context, attrs, defStyle);
     }
 
-    public PopTipView showPopTipForView(final View view) {
-        final PopTipView popTipView = new PopTipView(getContext());
-        popTipView.setClickableView(view);
-        addView(popTipView);
-        return popTipView;
+    public void show(final View view) {
+        addView(view);
     }
 }

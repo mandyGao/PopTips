@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">SuperToolTips</string>
+    <string name="app_name">PopTips</string>
 
     <string name="red">Red</string>
     <string name="green">Green</string>

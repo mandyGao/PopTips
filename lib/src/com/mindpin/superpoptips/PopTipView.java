@@ -1,4 +1,3 @@
-
 package com.mindpin.superpoptips;
 
 import java.lang.reflect.Field;
@@ -25,8 +24,7 @@ import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.view.ViewHelper;
 
-
-
+@SuppressLint("NewApi")
 public class PopTipView extends LinearLayout implements
 		ViewTreeObserver.OnPreDrawListener, View.OnClickListener {
 
@@ -39,7 +37,7 @@ public class PopTipView extends LinearLayout implements
 	private ArrowView mArrowView;
 	private ViewGroup mContentHolder;
 	private TextView mTextContent;
-	private View mView;
+	private View clickableView;
 
 	private int mRelativeMasterViewY;
 
@@ -54,8 +52,9 @@ public class PopTipView extends LinearLayout implements
 	private int offsetX;
 	private int offsetY;
 
-	public PopTipView(final Context context) {
+	public PopTipView(final Context context, View clickableView) {
 		super(context);
+		this.clickableView = clickableView;
 		init();
 	}
 
@@ -91,17 +90,17 @@ public class PopTipView extends LinearLayout implements
 	// 以此来计算基准点的位置
 	// 基准点即浮动框显示时，三角形箭头尖端所处的位置
 	// 偏移量的单位是 dp
-	public void setArrowPointOffset(int offsetX, int offsetY) {
+	public void set_arrow_point_offset(int offset_x, int offset_y) {
 		offsetX = DensityUtil.dip2px(getContext(), offsetX);
 		offsetY = DensityUtil.dip2px(getContext(), offsetY);
-		this.offsetX = offsetX;
-		this.offsetY = offsetY;
+		this.offsetX = offset_x;
+		this.offsetY = offset_y;
 
 	}
 
 	// 三角箭头相对于方框的位置
 	// 从 arrowLocation 的十二种之中选一种
-	public void setArrowLocation(ArrowLocation arrowLocation) {
+	public void set_arrow_location(ArrowLocation arrowLocation) {
 
 		this.arrowLocation = arrowLocation;
 
@@ -114,13 +113,13 @@ public class PopTipView extends LinearLayout implements
 	// 那么三角形和方框应该位于基准点的右侧偏下
 
 	// 设置方框矩形宽度（单位为dp）
-	public void setWidth(int width) {
+	public void set_width(int width) {
 		width = DensityUtil.dip2px(getContext(), width);
 		this.bodyWidth = width;
 	}
 
 	// 设置方框矩形高度（单位为dp）
-	public void setHeight(int height) {
+	public void set_height(int height) {
 		height = DensityUtil.dip2px(getContext(), height);
 		this.bodyHeight = height;
 	}
@@ -128,57 +127,61 @@ public class PopTipView extends LinearLayout implements
 	// 设置三角形箭头边的长度（单位为dp）
 	// 当 arrowLocation 是 top, bottom, left, right 时，该值为直角等腰三角形最长边的高
 	// 当 arrowLocation 是其他的八个斜角值时，该值为直角三角形的直角边长
-	public void setArrowWidth(int arrowWidth) {
+	public void set_arrow_width(int arrowWidth) {
 		arrowWidth = DensityUtil.dip2px(getContext(), arrowWidth);
 		this.arrowWidth = arrowWidth;
 	}
 
 	@Override
 	public boolean onPreDraw() {
+		Log.v("mandy", "on pre draw");
 		getViewTreeObserver().removeOnPreDrawListener(this);
 
-	    applyToolTipPosition();
+		applyToolTipPosition();
 		return true;
 	}
 
 	// 以 int 表示颜色
-	public void setBackgroud(final int bgColor) {
-		mArrowView.setColor(bgColor);
-		mContentHolder.setBackgroundColor(bgColor);
+	public void set_backgroud(final int bg_color) {
+		mArrowView.setColor(bg_color);
+		mContentHolder.setBackgroundColor(bg_color);
+	}
+    /**
+     * 以十六进制的字符串来表示颜色
+     * @param bg_color
+     */
+	public void set_backgroud(String bg_color) {
+		set_backgroud(Color.parseColor(bg_color));
+	}
+    /**
+     * 矩形框内默认的text
+     */
+	public void set_pop_text(String text) {
+		mTextContent.setText(text);
 	}
 
-	public void setBackgroud(String bgColor) {
-		setBackgroud(Color.parseColor(bgColor));
-	}
-	
-    public void setPopText(String text) {
-    	mTextContent.setText(text);
-    }
-    
-    public void setClickableView (View view) {
-    	this.mView = view;
-    }
-    
 	@SuppressLint("NewApi")
 	private void applyToolTipPosition() {
 
 		Log.v("mandy", "applyToolTipPosition");
 
 		final int[] masterViewScreenPosition = new int[2];
-		mView.getLocationOnScreen(masterViewScreenPosition);
+		clickableView.getLocationOnScreen(masterViewScreenPosition);
 		//
 		// final Rect viewDisplayFrame = new Rect();
 		// mView.getWindowVisibleDisplayFrame(viewDisplayFrame);
 		//
-		 final int[] parentViewScreenPosition = new int[2];
-		 ((View) getParent()).getLocationOnScreen(parentViewScreenPosition);
+		final int[] parentViewScreenPosition = new int[2];
+		((View) getParent()).getLocationOnScreen(parentViewScreenPosition);
 
-		final int masterViewWidth = mView.getWidth();
-		final int masterViewHeight = mView.getHeight();
+		final int masterViewWidth = clickableView.getWidth();
+		final int masterViewHeight = clickableView.getHeight();
 
-		mRelativeMasterViewX =  masterViewScreenPosition[0] - parentViewScreenPosition[0];
-		mRelativeMasterViewY = masterViewScreenPosition[1] - parentViewScreenPosition[1];
-		
+		mRelativeMasterViewX = masterViewScreenPosition[0]
+				- parentViewScreenPosition[0];
+		mRelativeMasterViewY = masterViewScreenPosition[1]
+				- parentViewScreenPosition[1];
+
 		final int relativeMasterViewCenterX = mRelativeMasterViewX
 				+ masterViewWidth / 2;
 
@@ -186,78 +189,84 @@ public class PopTipView extends LinearLayout implements
 				bodyWidth, bodyHeight);
 		RelativeLayout.LayoutParams arrowlayoutParams = new RelativeLayout.LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+
 		int longSide = 0; // 长的直角边
 		int shortSide = 0; // 短的直角边
 		int bevelSide = 0; // 斜边
-		int bottomSide = 0;//底边
+		int bottomSide = 0;// 底边
+		int defaultX = 0;
+		int defaultY = 0;
 		switch (arrowLocation) {
 		case top_left:
 			longSide = arrowWidth;
 			shortSide = arrowWidth / 2;
-	
-			drawTriangleArrow(0,0,0,longSide,shortSide,longSide);
-			
+
+			drawTriangleArrow(0, 0, 0, longSide, shortSide, longSide);
+
 			layoutParams.setMargins(0, longSide, 0, 0);
 			arrowlayoutParams.height = arrowWidth;
 			arrowlayoutParams.width = mArrowView.getStartX() + shortSide;
-            //设置矩形框的位置
-			setX(relativeMasterViewCenterX);
-			setY(mRelativeMasterViewY + masterViewHeight);
+			// 设置矩形框的位置
+			defaultX = relativeMasterViewCenterX;
+			defaultY = mRelativeMasterViewY + masterViewHeight;
 
 			break;
 		case top_right:
 			longSide = arrowWidth;
 			shortSide = arrowWidth / 2;
-			
-			drawTriangleArrow(shortSide,0,0,longSide,shortSide,longSide);
-			
+
+			drawTriangleArrow(shortSide, 0, 0, longSide, shortSide, longSide);
+
 			layoutParams.setMargins(0, longSide, 0, 0);
 			arrowlayoutParams.height = arrowWidth;
 			arrowlayoutParams.width = shortSide;
 
-			setArrowViewLocation(bodyWidth - shortSide,0);
-			
-			setX(relativeMasterViewCenterX - bodyWidth);
-			setY(mRelativeMasterViewY + masterViewHeight);
+			setArrowViewLocation(bodyWidth - shortSide, 0);
+
+			// 设置矩形框的位置
+			defaultX = relativeMasterViewCenterX - bodyWidth;
+			defaultY = mRelativeMasterViewY + masterViewHeight;
 
 			break;
 		case top:
 
 			shortSide = arrowWidth / 2;
-            bottomSide = shortSide * 2;
+			bottomSide = shortSide * 2;
 			bevelSide = arrowWidth;
 			longSide = (int) Math.sqrt((Math.pow(bevelSide, 2) - Math.pow(
 					shortSide, 2)));
-			
-			drawTriangleArrow(shortSide,0,0,longSide,bottomSide,longSide);
-			
+
+			drawTriangleArrow(shortSide, 0, 0, longSide, bottomSide, longSide);
+
 			layoutParams.setMargins(0, longSide, 0, 0);
 
 			arrowlayoutParams.height = arrowWidth;
 			arrowlayoutParams.width = shortSide * 2;
-			
-			setArrowViewLocation((bodyWidth - shortSide * 2) / 2,0);
 
-			setX(relativeMasterViewCenterX - bodyWidth / 2);
-			setY(mRelativeMasterViewY + masterViewHeight);
+			setArrowViewLocation((bodyWidth - shortSide * 2) / 2, 0);
+			// 设置矩形框的位置
+			defaultX = relativeMasterViewCenterX - bodyWidth/2;
+			defaultY = mRelativeMasterViewY + masterViewHeight;
+
 			break;
 		case bottom:
 			shortSide = arrowWidth / 2;
 			bevelSide = arrowWidth;
-			bottomSide = shortSide*2;
+			bottomSide = shortSide * 2;
 			longSide = (int) Math.sqrt((Math.pow(bevelSide, 2) - Math.pow(
 					shortSide, 2)));
-		    //画三角形
+			// 画三角形
 			drawTriangleArrow(0, 0, shortSide, longSide, bottomSide, 0);
 
 			arrowlayoutParams.height = longSide;
 			arrowlayoutParams.width = bottomSide;
 			arrowlayoutParams.setMargins(0, bodyHeight, 0, 0);
-			//设置三角形的位置
-			setArrowViewLocation((bodyWidth - bottomSide) / 2,0);
-			
-			setX(relativeMasterViewCenterX - bodyWidth / 2);
-			setY(mRelativeMasterViewY - bodyHeight - longSide);
+			// 设置三角形的位置
+			setArrowViewLocation((bodyWidth - bottomSide) / 2, 0);
+
+			// 设置矩形框的位置
+			defaultX = relativeMasterViewCenterX - bodyWidth / 2;
+			defaultY = mRelativeMasterViewY - bodyHeight - longSide;
 
 			break;
 
@@ -265,45 +274,49 @@ public class PopTipView extends LinearLayout implements
 			longSide = arrowWidth;
 			shortSide = arrowWidth / 2;
 			drawTriangleArrow(0, 0, 0, longSide, shortSide, 0);
-			
+
 			arrowlayoutParams.height = longSide;
 			arrowlayoutParams.width = shortSide;
 			arrowlayoutParams.setMargins(0, bodyHeight, 0, 0);
 
-			setX(mRelativeMasterViewX + masterViewWidth / 3);
-			setY(mRelativeMasterViewY - bodyHeight - longSide);
+			// 设置矩形框的位置
+			defaultX = mRelativeMasterViewX + masterViewWidth / 3;
+			defaultY = mRelativeMasterViewY - bodyHeight - longSide;
 
 			break;
 		case bottom_right:
 			longSide = arrowWidth;
 			shortSide = arrowWidth / 2;
-			
+
 			drawTriangleArrow(0, 0, shortSide, longSide, shortSide, 0);
 
 			arrowlayoutParams.height = longSide;
 			arrowlayoutParams.width = shortSide;
 			arrowlayoutParams.setMargins(0, bodyHeight, 0, 0);
 
-			//设置三角形的位置
-			setArrowViewLocation(bodyWidth - shortSide,0);
-			
-			setX(mRelativeMasterViewX + masterViewWidth / 3 * 2 - bodyWidth);
-			setY(mRelativeMasterViewY - bodyHeight - longSide);
+			// 设置三角形的位置
+			setArrowViewLocation(bodyWidth - shortSide, 0);
+
+			// 设置矩形框的位置
+			defaultX = mRelativeMasterViewX + masterViewWidth / 3 * 2
+					- bodyWidth;
+			defaultY = mRelativeMasterViewY - bodyHeight - longSide;
 
 			break;
 		case left_top:
 			longSide = arrowWidth;
 			shortSide = arrowWidth / 2;
-			
+
 			drawTriangleArrow(0, 0, longSide, shortSide, longSide, 0);
-			
+
 			layoutParams.setMargins(longSide, 0, 0, 0);
 
 			arrowlayoutParams.height = shortSide;
 			arrowlayoutParams.width = longSide;
-			
-			setX(mRelativeMasterViewX + masterViewWidth);
-			setY(mRelativeMasterViewY + masterViewHeight / 3);
+
+			// 设置矩形框的位置
+			defaultX = mRelativeMasterViewX + masterViewWidth;
+			defaultY = mRelativeMasterViewY + masterViewHeight / 3;
 
 			break;
 		case left_bottom:
@@ -311,16 +324,18 @@ public class PopTipView extends LinearLayout implements
 			shortSide = arrowWidth / 2;
 
 			drawTriangleArrow(0, shortSide, longSide, shortSide, longSide, 0);
-			
+
 			layoutParams.setMargins(longSide, 0, 0, 0);
 
 			arrowlayoutParams.height = shortSide;
 			arrowlayoutParams.width = longSide;
-			//设置三角形的位置
-			setArrowViewLocation(0,bodyHeight - shortSide);
-			
-			setX(mRelativeMasterViewX + masterViewWidth);
-			setY(mRelativeMasterViewY + masterViewHeight / 3 * 2 - bodyHeight);
+			// 设置三角形的位置
+			setArrowViewLocation(0, bodyHeight - shortSide);
+
+			// 设置矩形框的位置
+			defaultX = mRelativeMasterViewX + masterViewWidth;
+			defaultY = mRelativeMasterViewY + masterViewHeight / 3 * 2
+					- bodyHeight;
 
 			break;
 		case left:
@@ -328,25 +343,27 @@ public class PopTipView extends LinearLayout implements
 			bevelSide = arrowWidth;
 			longSide = (int) Math.sqrt((Math.pow(bevelSide, 2) - Math.pow(
 					shortSide, 2)));
-			bottomSide = shortSide*2;
-			
+			bottomSide = shortSide * 2;
+
 			drawTriangleArrow(0, shortSide, longSide, bottomSide, longSide, 0);
-			
+
 			layoutParams.setMargins(longSide, 0, 0, 0);
 
 			arrowlayoutParams.height = bottomSide;
 			arrowlayoutParams.width = longSide;
-			//设置三角形的位置
-			setArrowViewLocation(0,(bodyHeight - bottomSide) / 2);
+			// 设置三角形的位置
+			setArrowViewLocation(0, (bodyHeight - bottomSide) / 2);
 
-			setX(mRelativeMasterViewX + masterViewWidth);
-			setY(mRelativeMasterViewY + masterViewHeight / 2 - bodyHeight / 2);
+			// 设置矩形框的位置
+			defaultX = mRelativeMasterViewX + masterViewWidth;
+			defaultY = mRelativeMasterViewY + masterViewHeight / 2 - bodyHeight
+					/ 2;
 
 			break;
 		case right_top:
 			longSide = arrowWidth;
 			shortSide = arrowWidth / 2;
-			
+
 			drawTriangleArrow(0, 0, 0, shortSide, longSide, 0);
 
 			arrowlayoutParams.height = shortSide;
@@ -354,16 +371,17 @@ public class PopTipView extends LinearLayout implements
 			arrowlayoutParams.addRule(RelativeLayout.RIGHT_OF,
 					R.id.poptip_contentholder);
 
-			setX(mRelativeMasterViewX - bodyWidth - longSide);
-			setY(mRelativeMasterViewY + masterViewHeight / 3);
+			// 设置矩形框的位置
+			defaultX = mRelativeMasterViewX - bodyWidth - longSide;
+			defaultY = mRelativeMasterViewY + masterViewHeight / 3;
 
 			break;
 		case right_bottom:
 			longSide = arrowWidth;
 			shortSide = arrowWidth / 2;
-			
+
 			drawTriangleArrow(0, 0, 0, shortSide, longSide, shortSide);
-			
+
 			arrowlayoutParams.height = shortSide;
 			arrowlayoutParams.width = longSide;
 			arrowlayoutParams.addRule(RelativeLayout.RIGHT_OF,
@@ -371,8 +389,10 @@ public class PopTipView extends LinearLayout implements
 			arrowlayoutParams.addRule(RelativeLayout.ALIGN_BOTTOM,
 					R.id.poptip_contentholder);
 
-			setX(mRelativeMasterViewX - bodyWidth - longSide);
-			setY(mRelativeMasterViewY + masterViewHeight / 3 * 2 - bodyHeight);
+			// 设置矩形框的位置
+			defaultX = mRelativeMasterViewX - bodyWidth - longSide;
+			defaultY = mRelativeMasterViewY + masterViewHeight / 3 * 2
+					- bodyHeight;
 
 			break;
 		case right:
@@ -380,31 +400,39 @@ public class PopTipView extends LinearLayout implements
 			bevelSide = arrowWidth;
 			longSide = (int) Math.sqrt((Math.pow(bevelSide, 2) - Math.pow(
 					shortSide, 2)));
-            bottomSide = shortSide*2;
-            
+			bottomSide = shortSide * 2;
+
 			drawTriangleArrow(0, 0, 0, bottomSide, longSide, shortSide);
 			arrowlayoutParams.height = bottomSide;
 			arrowlayoutParams.width = longSide;
 			arrowlayoutParams.addRule(RelativeLayout.RIGHT_OF,
 					R.id.poptip_contentholder);
-			arrowlayoutParams.setMargins(0, (bodyHeight - bottomSide) / 2,
-					0, 0);
+			arrowlayoutParams
+					.setMargins(0, (bodyHeight - bottomSide) / 2, 0, 0);
 
-			setX(mRelativeMasterViewX - bodyWidth - longSide);
-			setY(mRelativeMasterViewY + masterViewHeight / 2 - bodyHeight / 2);
+			// 设置矩形框的位置
+			defaultX = mRelativeMasterViewX - bodyWidth - longSide;
+			defaultY = mRelativeMasterViewY + masterViewHeight / 2 - bodyHeight
+					/ 2;
 
 			break;
 
 		default:
 			break;
 		}
-
+		// 在offsetX或者offsetY是0的情况下，就使用默认的位置，如果可点击控件的左上角坐标加上基准点的值为负值的话，就认为是超出屏幕范围了，这个时候取坐标值为0.
+		setPopTipLocation(
+				offsetX == 0 ? defaultX : Math.max(0, mRelativeMasterViewX
+						+ offsetX),
+				offsetY == 0 ? defaultY : Math.max(0, mRelativeMasterViewY
+						+ offsetY));
 		mArrowView.setLayoutParams(arrowlayoutParams);
 		mContentHolder.setLayoutParams(layoutParams);
 
 	}
 
-	private void drawTriangleArrow(int startX,int startY,int secondlyLineX, int secondlyLineY,int thirdLineX, int thirdLineY) {
+	private void drawTriangleArrow(int startX, int startY, int secondlyLineX,
+			int secondlyLineY, int thirdLineX, int thirdLineY) {
 
 		mArrowView.setStartX(startX);
 		mArrowView.setStartY(startY);
@@ -414,48 +442,55 @@ public class PopTipView extends LinearLayout implements
 		mArrowView.setThirdLineY(thirdLineY);
 
 	}
-	
-    @SuppressLint("NewApi")
-	private void setArrowViewLocation (int x, int y) {
-    	
-    	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+
+	private void setPopTipLocation(int x, int y) {
+		setX(x);
+		setY(y);
+	}
+
+	@SuppressLint("NewApi")
+	private void setArrowViewLocation(int x, int y) {
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			mArrowView.setX(x);
 			mArrowView.setY(y);
 		} else {
 			ViewHelper.setX(mArrowView, x);
 			ViewHelper.setY(mArrowView, y);
-			
-		}
-    	
-    }
 
-	public static int getStatusBarHeight(Context context) {
-		Class<?> c = null;
-		Object obj = null;
-		Field field = null;
-		int x = 0, statusBarHeight = 0;
-		try {
-			c = Class.forName("com.android.internal.R$dimen");
-			obj = c.newInstance();
-			field = c.getField("status_bar_height");
-			x = Integer.parseInt(field.get(obj).toString());
-			statusBarHeight = context.getResources().getDimensionPixelSize(x);
-		} catch (Exception e1) {
-			e1.printStackTrace();
 		}
-		return statusBarHeight;
+
 	}
 
-	public void setOnPopTipViewClickedListener(
+	// public static int getStatusBarHeight(Context context) {
+	// Class<?> c = null;
+	// Object obj = null;
+	// Field field = null;
+	// int x = 0, statusBarHeight = 0;
+	// try {
+	// c = Class.forName("com.android.internal.R$dimen");
+	// obj = c.newInstance();
+	// field = c.getField("status_bar_height");
+	// x = Integer.parseInt(field.get(obj).toString());
+	// statusBarHeight = context.getResources().getDimensionPixelSize(x);
+	// } catch (Exception e1) {
+	// e1.printStackTrace();
+	// }
+	// return statusBarHeight;
+	// }
+	// 注册浮动框点击事件
+	public void set_pop_click_listener(
 			final OnPopTipViewClickedListener listener) {
 		mListener = listener;
 	}
 
-	public void setContentView(final View view) {
+	// 设置浮动框上要显示的内容子 View
+	public void set_content_view(View view) {
 		mContentHolder.removeAllViews();
 		mContentHolder.addView(view);
 	}
 
+	// 隐藏浮动框
 	@SuppressLint("NewApi")
 	public void hide() {
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
@@ -467,34 +502,23 @@ public class PopTipView extends LinearLayout implements
 			setLayoutParams(params);
 		}
 
-//		if (mToolTip.getAnimationType() == ToolTip.AnimationType.NONE) {
-//			if (getParent() != null) {
-//				((ViewManager) getParent()).removeView(this);
-//			}
-	
-			Collection<Animator> animators = new ArrayList<Animator>(5);
-//			if (mToolTip.getAnimationType() == ToolTip.AnimationType.FROM_MASTER_VIEW) {
-				animators.add(ObjectAnimator.ofInt(this, TRANSLATION_Y_COMPAT,
-						(int) getY(), mRelativeMasterViewY + mView.getHeight()
-								/ 2 - getHeight() / 2));
-				animators.add(ObjectAnimator.ofInt(this, TRANSLATION_X_COMPAT,
-						(int) getX(), mRelativeMasterViewX + mView.getWidth()
-								/ 2 - mWidth / 2));
-//			} else {
-//				animators.add(ObjectAnimator.ofFloat(this,
-//						TRANSLATION_Y_COMPAT, getY(), 0));
-//			}
+		Collection<Animator> animators = new ArrayList<Animator>(5);
+		animators.add(ObjectAnimator.ofInt(this, TRANSLATION_Y_COMPAT,
+				(int) getY(), mRelativeMasterViewY + clickableView.getHeight()
+						/ 2 - getHeight() / 2));
+		animators.add(ObjectAnimator.ofInt(this, TRANSLATION_X_COMPAT,
+				(int) getX(), mRelativeMasterViewX + clickableView.getWidth()
+						/ 2 - mWidth / 2));
+		animators.add(ObjectAnimator.ofFloat(this, SCALE_X_COMPAT, 1, 0));
+		animators.add(ObjectAnimator.ofFloat(this, SCALE_Y_COMPAT, 1, 0));
 
-			animators.add(ObjectAnimator.ofFloat(this, SCALE_X_COMPAT, 1, 0));
-			animators.add(ObjectAnimator.ofFloat(this, SCALE_Y_COMPAT, 1, 0));
+		animators.add(ObjectAnimator.ofFloat(this, ALPHA_COMPAT, 1, 0));
 
-			animators.add(ObjectAnimator.ofFloat(this, ALPHA_COMPAT, 1, 0));
+		AnimatorSet animatorSet = new AnimatorSet();
+		animatorSet.playTogether(animators);
+		animatorSet.addListener(new DisappearanceAnimatorListener());
+		animatorSet.start();
 
-			AnimatorSet animatorSet = new AnimatorSet();
-			animatorSet.playTogether(animators);
-			animatorSet.addListener(new DisappearanceAnimatorListener());
-			animatorSet.start();
-		
 	}
 
 	@Override
@@ -506,20 +530,20 @@ public class PopTipView extends LinearLayout implements
 		}
 	}
 
-	/**
-	 * Convenience method for getting X.
-	 */
-	@SuppressLint("NewApi")
-	@Override
-	public float getX() {
-		float result;
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			result = super.getX();
-		} else {
-			result = ViewHelper.getX(this);
-		}
-		return result;
-	}
+	// /**
+	// * Convenience method for getting X.
+	// */
+	// @SuppressLint("NewApi")
+	// @Override
+	// public float getX() {
+	// float result;
+	// if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+	// result = super.getX();
+	// } else {
+	// result = ViewHelper.getX(this);
+	// }
+	// return result;
+	// }
 
 	/**
 	 * Convenience method for setting X.
@@ -534,20 +558,20 @@ public class PopTipView extends LinearLayout implements
 		}
 	}
 
-	/**
-	 * Convenience method for getting Y.
-	 */
-	@SuppressLint("NewApi")
-	@Override
-	public float getY() {
-		float result;
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			result = super.getY();
-		} else {
-			result = ViewHelper.getY(this);
-		}
-		return result;
-	}
+	// /**
+	// * Convenience method for getting Y.
+	// */
+	// @SuppressLint("NewApi")
+	// @Override
+	// public float getY() {
+	// float result;
+	// if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+	// result = super.getY();
+	// } else {
+	// result = ViewHelper.getY(this);
+	// }
+	// return result;
+	// }
 
 	/**
 	 * Convenience method for setting Y.
