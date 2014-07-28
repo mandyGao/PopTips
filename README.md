@@ -173,5 +173,3 @@ PopTipView类是实现浮动框泡泡组件最主要的类
 ###效果图：###
 
 ![](http://blog.csdn.net/gaolixiao/article/details/38240601)
-
-
