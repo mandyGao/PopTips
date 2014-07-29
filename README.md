@@ -133,8 +133,6 @@ PopTipView类是实现浮动框泡泡组件最主要的类
 - 在代码中找到这个PopTipRelativeLayout类，通过show的方法把PopTipView显示出来，在show之前可以设置属性。
 ###例子：###
 
-
-
     <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -160,7 +158,9 @@ PopTipView类是实现浮动框泡泡组件最主要的类
               PopTipRelativeLayout mPopTipFrameLayout = (PopTipRelativeLayout)
              findViewById(R.id.activity_main_poptipframelayout);
 
-                PopTipView mGreenPopTipView = new PopTipView(this, findViewById(R.id.activity_main_greentv));
+                PopTipView mGreenPopTipView = new PopTipView(this,                     
+                 findViewById(R.id.activity_main_greentv));
+
 		mGreenPopTipView.set_pop_click_listener(this);
 		mGreenPopTipView.set_width(100);
 		mGreenPopTipView.set_height(50);
