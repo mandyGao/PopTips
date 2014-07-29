@@ -156,11 +156,11 @@ PopTipView类是实现浮动框泡泡组件最主要的类
          super.onCreate(savedInstanceState);
            setContentView(R.layout.activity_main);
 
-              PopTipRelativeLayout mPopTipFrameLayout = (PopTipRelativeLayout)
-             findViewById(R.id.activity_main_poptipframelayout);
+               PopTipRelativeLayout mPopTipFrameLayout = (PopTipRelativeLayout)
+               findViewById(R.id.activity_main_poptipframelayout);
 
-                PopTipView mGreenPopTipView = new PopTipView(this,                     
-                 findViewById(R.id.activity_main_greentv));
+               PopTipView mGreenPopTipView = new PopTipView(this,                     
+                findViewById(R.id.activity_main_greentv));
 
 		mGreenPopTipView.set_pop_click_listener(this);
 		mGreenPopTipView.set_width(100);
@@ -170,8 +170,7 @@ PopTipView类是实现浮动框泡泡组件最主要的类
 		mGreenPopTipView.set_pop_text("Another beautiful Button!");
 		mGreenPopTipView.set_backgroud(getResources().getColor(
 				R.color.holo_green));
-		mPopTipFrameLayout
-		.show(mGreenPopTipView);
+		mPopTipFrameLayout.show(mGreenPopTipView);
 
 ###效果图：###
 
