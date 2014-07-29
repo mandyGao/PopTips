@@ -4,7 +4,7 @@
 
 ##所涉及到的类API说明如下：##
 
-此类用于是浮动框组件的父类，通过show的方法可以浮动框组件类PopTipView添加界面上   
+此类是浮动框组件的父类，通过show的方法可以将浮动框组件类PopTipView添加显示到界面上   
 
     public class PopTipRelativeLayout extends RelativeLayout {
     
@@ -131,6 +131,7 @@ PopTipView类是实现浮动框泡泡组件最主要的类
 ###使用方法：###
 -  在自己的布局文件中增加com.mindpin.superpoptips.PopTipRelativeLayout设置宽和高为 match_parent, 并确保这个view处于最上层。
 - 在代码中找到这个PopTipRelativeLayout类，通过show的方法把PopTipView显示出来，在show之前可以设置属性。
+
 ###例子：###
 
     <RelativeLayout
