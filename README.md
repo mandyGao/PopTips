@@ -5,7 +5,7 @@
 ##所涉及到的类API说明如下：##
 
 此类是浮动框组件的父类，通过show的方法可以将浮动框组件类PopTipView添加显示到界面上   
->>>java
+>>> PopTipRelativeLayout.java
 
     public class PopTipRelativeLayout extends RelativeLayout {
     
@@ -28,7 +28,7 @@
 
 PopTipView类是实现浮动框泡泡组件最主要的类
 
->>>java
+>>>PopTipView.java
 
     public class PopTipView extends LinearLayout implements
 
@@ -132,11 +132,11 @@ PopTipView类是实现浮动框泡泡组件最主要的类
 
 ###使用方法：###
 -  在自己的布局文件中增加com.mindpin.superpoptips.PopTipRelativeLayout设置宽和高为 match_parent, 并确保这个view处于最上层。
-- 在代码中找到这个PopTipRelativeLayout类，通过show的方法把PopTipView显示出来，在show之前可以设置属性。
+- 在代码中找到这个PopTipRelativeLayout类，通过show的方法把PopTipView显示出来，在show之前可以设置浮动框的宽高等属性。
 
 ###例子：###
 
->>>xml
+>>>activity_main.xml
 
     <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -148,20 +148,20 @@ PopTipView类是实现浮动框泡泡组件最主要的类
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true" />
-
+    //在布局文件中加入PopTipRelativeLayout，并确保在屏幕的最上层
     <com.mindpin.superpoptips.PopTipRelativeLayout
         android:id="@+id/activity_main_poptipframelayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
     </RelativeLayout>
 
-   >>>java
+   >>>GaoActivity.java
    
      @Override
      protected void onCreate(Bundle savedInstanceState) {
          super.onCreate(savedInstanceState);
            setContentView(R.layout.activity_main);
-
+           //获取PopTipRelativeLayout对象
            PopTipRelativeLayout mPopTipFrameLayout = (PopTipRelativeLayout)
                findViewById(R.id.activity_main_poptipframelayout);
 
@@ -179,5 +179,6 @@ PopTipView类是实现浮动框泡泡组件最主要的类
 		   // mRedPopTipView.setArrowPointOffset(50,50);
 		    mRedPopTipView.set_pop_text("A beautiful Button");
 		    mRedPopTipView.set_backgroud(getResources().getColor(R.color.holo_red));
+            //把mRedPopTipView对象加入PopTipRelativeLayout中显示出来
 		    mPopTipFrameLayout.show(mRedPopTipView);
 
