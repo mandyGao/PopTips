@@ -5,6 +5,7 @@
 ##所涉及到的类API说明如下：##
 
 此类是浮动框组件的父类，通过show的方法可以将浮动框组件类PopTipView添加显示到界面上   
+>>>java
 
     public class PopTipRelativeLayout extends RelativeLayout {
     
@@ -27,8 +28,9 @@
 
 PopTipView类是实现浮动框泡泡组件最主要的类
 
+>>>java
 
-    public class **PopTipView** extends LinearLayout implements
+    public class PopTipView extends LinearLayout implements
 
 		ViewTreeObserver.OnPreDrawListener, View.OnClickListener {
       //初始化类，并把可点击view传进来
@@ -134,6 +136,8 @@ PopTipView类是实现浮动框泡泡组件最主要的类
 
 ###例子：###
 
+>>>xml
+
     <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -151,27 +155,29 @@ PopTipView类是实现浮动框泡泡组件最主要的类
         android:layout_height="match_parent" />
     </RelativeLayout>
 
+   >>>java
+   
      @Override
      protected void onCreate(Bundle savedInstanceState) {
          super.onCreate(savedInstanceState);
            setContentView(R.layout.activity_main);
 
-               PopTipRelativeLayout mPopTipFrameLayout = (PopTipRelativeLayout)
+           PopTipRelativeLayout mPopTipFrameLayout = (PopTipRelativeLayout)
                findViewById(R.id.activity_main_poptipframelayout);
 
-               PopTipView mGreenPopTipView = new PopTipView(this,                     
-                findViewById(R.id.activity_main_greentv));
+             //新建一个PopTipView 对象，并传进去一个可点击View
+		     mRedPopTipView = new PopTipView(this, findViewById(R.id.activity_main_redtv));
+		     //设置浮动框点击事件
+		    mRedPopTipView.set_pop_click_listener(this);
+		    mRedPopTipView.set_width(100);
+		    mRedPopTipView.set_height(50);
+		    //设置三角形的位置
+		    mRedPopTipView.set_arrow_location(ArrowLocation.top_left);
+		    //设置三角形的长度
+		    mRedPopTipView.set_arrow_width(20);
+		    mRedPopTipView.set_arrow_point_offset(0, 0);
+		   // mRedPopTipView.setArrowPointOffset(50,50);
+		    mRedPopTipView.set_pop_text("A beautiful Button");
+		    mRedPopTipView.set_backgroud(getResources().getColor(R.color.holo_red));
+		    mPopTipFrameLayout.show(mRedPopTipView);
 
-		mGreenPopTipView.set_pop_click_listener(this);
-		mGreenPopTipView.set_width(100);
-		mGreenPopTipView.set_height(50);
-		mGreenPopTipView.set_arrow_location(ArrowLocation.top_right);
-		mGreenPopTipView.set_arrow_width(30);
-		mGreenPopTipView.set_pop_text("Another beautiful Button!");
-		mGreenPopTipView.set_backgroud(getResources().getColor(
-				R.color.holo_green));
-		mPopTipFrameLayout.show(mGreenPopTipView);
-
-###效果图：###
-
-![](http://blog.csdn.net/gaolixiao/article/details/38240601)
