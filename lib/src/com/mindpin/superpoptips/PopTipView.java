@@ -1,6 +1,5 @@
 package com.mindpin.superpoptips;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -24,7 +23,7 @@ import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.view.ViewHelper;
 
-@SuppressLint("NewApi")
+@SuppressLint({ "NewApi", "ViewConstructor" })
 public class PopTipView extends LinearLayout implements
 		ViewTreeObserver.OnPreDrawListener, View.OnClickListener {
 
@@ -42,7 +41,6 @@ public class PopTipView extends LinearLayout implements
 	private int mRelativeMasterViewY;
 
 	private int mRelativeMasterViewX;
-	private int mWidth;
 
 	private OnPopTipViewClickedListener mListener;
 	private int bodyWidth;
@@ -51,6 +49,7 @@ public class PopTipView extends LinearLayout implements
 	private int arrowWidth;
 	private int offsetX;
 	private int offsetY;
+	private ObjectAnimator anim = null;
 
 	public PopTipView(final Context context, View clickableView) {
 		super(context);
@@ -146,16 +145,19 @@ public class PopTipView extends LinearLayout implements
 		mArrowView.setColor(bg_color);
 		mContentHolder.setBackgroundColor(bg_color);
 	}
-    /**
-     * 以十六进制的字符串来表示颜色
-     * @param bg_color
-     */
+
+	/**
+	 * 以十六进制的字符串来表示颜色
+	 * 
+	 * @param bg_color
+	 */
 	public void set_backgroud(String bg_color) {
 		set_backgroud(Color.parseColor(bg_color));
 	}
-    /**
-     * 矩形框内默认的text
-     */
+
+	/**
+	 * 矩形框内默认的text
+	 */
 	public void set_pop_text(String text) {
 		mTextContent.setText(text);
 	}
@@ -196,11 +198,12 @@ public class PopTipView extends LinearLayout implements
 		int bottomSide = 0;// 底边
 		int defaultX = 0;
 		int defaultY = 0;
+		String translation = null;
+
 		switch (arrowLocation) {
 		case top_left:
 			longSide = arrowWidth;
-			shortSide = arrowWidth / 2;
-
+			shortSide = arrowWidth;
 			drawTriangleArrow(0, 0, 0, longSide, shortSide, longSide);
 
 			layoutParams.setMargins(0, longSide, 0, 0);
@@ -210,10 +213,12 @@ public class PopTipView extends LinearLayout implements
 			defaultX = relativeMasterViewCenterX;
 			defaultY = mRelativeMasterViewY + masterViewHeight;
 
+			translation = "translationY";
+
 			break;
 		case top_right:
 			longSide = arrowWidth;
-			shortSide = arrowWidth / 2;
+			shortSide = arrowWidth;
 
 			drawTriangleArrow(shortSide, 0, 0, longSide, shortSide, longSide);
 
@@ -227,34 +232,42 @@ public class PopTipView extends LinearLayout implements
 			defaultX = relativeMasterViewCenterX - bodyWidth;
 			defaultY = mRelativeMasterViewY + masterViewHeight;
 
+			translation = "translationY";
+
 			break;
 		case top:
 
-			shortSide = arrowWidth / 2;
-			bottomSide = shortSide * 2;
+			//
 			bevelSide = arrowWidth;
-			longSide = (int) Math.sqrt((Math.pow(bevelSide, 2) - Math.pow(
-					shortSide, 2)));
+			bottomSide = (int) (Math.sqrt(2) * bevelSide);
+			shortSide = bottomSide / 2;
+
+			// longSide = (int) Math.sqrt((Math.pow(bevelSide, 2) - Math.pow(
+			// shortSide, 2)));
+			longSide = bottomSide / 2;
 
 			drawTriangleArrow(shortSide, 0, 0, longSide, bottomSide, longSide);
 
 			layoutParams.setMargins(0, longSide, 0, 0);
 
-			arrowlayoutParams.height = arrowWidth;
-			arrowlayoutParams.width = shortSide * 2;
+			arrowlayoutParams.height = longSide;
+			arrowlayoutParams.width = bottomSide;
 
-			setArrowViewLocation((bodyWidth - shortSide * 2) / 2, 0);
+			setArrowViewLocation((bodyWidth - bottomSide) / 2, 0);
 			// 设置矩形框的位置
-			defaultX = relativeMasterViewCenterX - bodyWidth/2;
+			defaultX = relativeMasterViewCenterX - bodyWidth / 2;
 			defaultY = mRelativeMasterViewY + masterViewHeight;
+
+			translation = "translationY";
 
 			break;
 		case bottom:
-			shortSide = arrowWidth / 2;
+
 			bevelSide = arrowWidth;
-			bottomSide = shortSide * 2;
-			longSide = (int) Math.sqrt((Math.pow(bevelSide, 2) - Math.pow(
-					shortSide, 2)));
+			bottomSide = (int) (Math.sqrt(2) * bevelSide);
+			shortSide = bottomSide / 2;
+			longSide = bottomSide / 2;
+
 			// 画三角形
 			drawTriangleArrow(0, 0, shortSide, longSide, bottomSide, 0);
 
@@ -268,11 +281,13 @@ public class PopTipView extends LinearLayout implements
 			defaultX = relativeMasterViewCenterX - bodyWidth / 2;
 			defaultY = mRelativeMasterViewY - bodyHeight - longSide;
 
+			translation = "translationY";
+
 			break;
 
 		case bottom_left:
 			longSide = arrowWidth;
-			shortSide = arrowWidth / 2;
+			shortSide = arrowWidth;
 			drawTriangleArrow(0, 0, 0, longSide, shortSide, 0);
 
 			arrowlayoutParams.height = longSide;
@@ -283,10 +298,11 @@ public class PopTipView extends LinearLayout implements
 			defaultX = mRelativeMasterViewX + masterViewWidth / 3;
 			defaultY = mRelativeMasterViewY - bodyHeight - longSide;
 
+			translation = "translationY";
 			break;
 		case bottom_right:
 			longSide = arrowWidth;
-			shortSide = arrowWidth / 2;
+			shortSide = arrowWidth;
 
 			drawTriangleArrow(0, 0, shortSide, longSide, shortSide, 0);
 
@@ -302,10 +318,12 @@ public class PopTipView extends LinearLayout implements
 					- bodyWidth;
 			defaultY = mRelativeMasterViewY - bodyHeight - longSide;
 
+			translation = "translationY";
+
 			break;
 		case left_top:
 			longSide = arrowWidth;
-			shortSide = arrowWidth / 2;
+			shortSide = arrowWidth;
 
 			drawTriangleArrow(0, 0, longSide, shortSide, longSide, 0);
 
@@ -318,10 +336,12 @@ public class PopTipView extends LinearLayout implements
 			defaultX = mRelativeMasterViewX + masterViewWidth;
 			defaultY = mRelativeMasterViewY + masterViewHeight / 3;
 
+			translation = "translationX";
+
 			break;
 		case left_bottom:
 			longSide = arrowWidth;
-			shortSide = arrowWidth / 2;
+			shortSide = arrowWidth;
 
 			drawTriangleArrow(0, shortSide, longSide, shortSide, longSide, 0);
 
@@ -337,13 +357,15 @@ public class PopTipView extends LinearLayout implements
 			defaultY = mRelativeMasterViewY + masterViewHeight / 3 * 2
 					- bodyHeight;
 
+			translation = "translationX";
+
 			break;
 		case left:
-			shortSide = arrowWidth / 2;
+
 			bevelSide = arrowWidth;
-			longSide = (int) Math.sqrt((Math.pow(bevelSide, 2) - Math.pow(
-					shortSide, 2)));
-			bottomSide = shortSide * 2;
+			bottomSide = (int) (Math.sqrt(2) * bevelSide);
+			shortSide = bottomSide / 2;
+			longSide = bottomSide / 2;
 
 			drawTriangleArrow(0, shortSide, longSide, bottomSide, longSide, 0);
 
@@ -358,11 +380,12 @@ public class PopTipView extends LinearLayout implements
 			defaultX = mRelativeMasterViewX + masterViewWidth;
 			defaultY = mRelativeMasterViewY + masterViewHeight / 2 - bodyHeight
 					/ 2;
+			translation = "translationX";
 
 			break;
 		case right_top:
 			longSide = arrowWidth;
-			shortSide = arrowWidth / 2;
+			shortSide = arrowWidth;
 
 			drawTriangleArrow(0, 0, 0, shortSide, longSide, 0);
 
@@ -375,10 +398,12 @@ public class PopTipView extends LinearLayout implements
 			defaultX = mRelativeMasterViewX - bodyWidth - longSide;
 			defaultY = mRelativeMasterViewY + masterViewHeight / 3;
 
+			translation = "translationX";
+
 			break;
 		case right_bottom:
 			longSide = arrowWidth;
-			shortSide = arrowWidth / 2;
+			shortSide = arrowWidth;
 
 			drawTriangleArrow(0, 0, 0, shortSide, longSide, shortSide);
 
@@ -393,14 +418,15 @@ public class PopTipView extends LinearLayout implements
 			defaultX = mRelativeMasterViewX - bodyWidth - longSide;
 			defaultY = mRelativeMasterViewY + masterViewHeight / 3 * 2
 					- bodyHeight;
+			translation = "translationX";
 
 			break;
 		case right:
-			shortSide = arrowWidth / 2;
+
 			bevelSide = arrowWidth;
-			longSide = (int) Math.sqrt((Math.pow(bevelSide, 2) - Math.pow(
-					shortSide, 2)));
-			bottomSide = shortSide * 2;
+			bottomSide = (int) (Math.sqrt(2) * bevelSide);
+			shortSide = bottomSide / 2;
+			longSide = bottomSide / 2;
 
 			drawTriangleArrow(0, 0, 0, bottomSide, longSide, shortSide);
 			arrowlayoutParams.height = bottomSide;
@@ -415,6 +441,8 @@ public class PopTipView extends LinearLayout implements
 			defaultY = mRelativeMasterViewY + masterViewHeight / 2 - bodyHeight
 					/ 2;
 
+			translation = "translationX";
+
 			break;
 
 		default:
@@ -426,8 +454,31 @@ public class PopTipView extends LinearLayout implements
 						+ offsetX),
 				offsetY == 0 ? defaultY : Math.max(0, mRelativeMasterViewY
 						+ offsetY));
+
+		if (TRANSLATION_Y_COMPAT.equals(translation)) {
+
+			setAnimator(
+					TRANSLATION_Y_COMPAT,
+					mRelativeMasterViewY,
+					offsetY == 0 ? defaultY : Math.max(0, mRelativeMasterViewY
+							+ offsetY));
+
+		} else {
+
+			setAnimator(
+					TRANSLATION_X_COMPAT,
+					mRelativeMasterViewX,
+					offsetX == 0 ? defaultX : Math.max(0, mRelativeMasterViewX
+							+ offsetX));
+
+		}
 		mArrowView.setLayoutParams(arrowlayoutParams);
 		mContentHolder.setLayoutParams(layoutParams);
+		anim.start();
+	}
+
+	private void setAnimator(String propertyName, float from, float to) {
+		anim = ObjectAnimator.ofFloat(this, propertyName, from, to);
 
 	}
 
@@ -446,6 +497,7 @@ public class PopTipView extends LinearLayout implements
 	private void setPopTipLocation(int x, int y) {
 		setX(x);
 		setY(y);
+	
 	}
 
 	@SuppressLint("NewApi")
@@ -462,22 +514,6 @@ public class PopTipView extends LinearLayout implements
 
 	}
 
-	// public static int getStatusBarHeight(Context context) {
-	// Class<?> c = null;
-	// Object obj = null;
-	// Field field = null;
-	// int x = 0, statusBarHeight = 0;
-	// try {
-	// c = Class.forName("com.android.internal.R$dimen");
-	// obj = c.newInstance();
-	// field = c.getField("status_bar_height");
-	// x = Integer.parseInt(field.get(obj).toString());
-	// statusBarHeight = context.getResources().getDimensionPixelSize(x);
-	// } catch (Exception e1) {
-	// e1.printStackTrace();
-	// }
-	// return statusBarHeight;
-	// }
 	// 注册浮动框点击事件
 	public void set_pop_click_listener(
 			final OnPopTipViewClickedListener listener) {
@@ -503,16 +539,17 @@ public class PopTipView extends LinearLayout implements
 		}
 
 		Collection<Animator> animators = new ArrayList<Animator>(5);
-		animators.add(ObjectAnimator.ofInt(this, TRANSLATION_Y_COMPAT,
-				(int) getY(), mRelativeMasterViewY + clickableView.getHeight()
-						/ 2 - getHeight() / 2));
-		animators.add(ObjectAnimator.ofInt(this, TRANSLATION_X_COMPAT,
-				(int) getX(), mRelativeMasterViewX + clickableView.getWidth()
-						/ 2 - mWidth / 2));
-		animators.add(ObjectAnimator.ofFloat(this, SCALE_X_COMPAT, 1, 0));
-		animators.add(ObjectAnimator.ofFloat(this, SCALE_Y_COMPAT, 1, 0));
+		// animators.add(ObjectAnimator.ofInt(this, TRANSLATION_Y_COMPAT,
+		// (int) getY(), mRelativeMasterViewY + clickableView.getHeight()
+		// / 2 - getHeight() / 2));
+		// animators.add(ObjectAnimator.ofInt(this, TRANSLATION_X_COMPAT,
+		// (int) getX(), mRelativeMasterViewX + clickableView.getWidth()
+		// / 2 - mWidth / 2));
+		// animators.add(ObjectAnimator.ofFloat(this, SCALE_X_COMPAT, 1, 0));
+		// animators.add(ObjectAnimator.ofFloat(this, SCALE_Y_COMPAT, 1, 0));
 
-		animators.add(ObjectAnimator.ofFloat(this, ALPHA_COMPAT, 1, 0));
+		animators.add(ObjectAnimator.ofFloat(this, ALPHA_COMPAT, 1, 0.5f));
+		animators.add(ObjectAnimator.ofFloat(this, ALPHA_COMPAT, 0.5f, 0f));
 
 		AnimatorSet animatorSet = new AnimatorSet();
 		animatorSet.playTogether(animators);
@@ -530,21 +567,6 @@ public class PopTipView extends LinearLayout implements
 		}
 	}
 
-	// /**
-	// * Convenience method for getting X.
-	// */
-	// @SuppressLint("NewApi")
-	// @Override
-	// public float getX() {
-	// float result;
-	// if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-	// result = super.getX();
-	// } else {
-	// result = ViewHelper.getX(this);
-	// }
-	// return result;
-	// }
-
 	/**
 	 * Convenience method for setting X.
 	 */
@@ -558,20 +580,6 @@ public class PopTipView extends LinearLayout implements
 		}
 	}
 
-	// /**
-	// * Convenience method for getting Y.
-	// */
-	// @SuppressLint("NewApi")
-	// @Override
-	// public float getY() {
-	// float result;
-	// if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-	// result = super.getY();
-	// } else {
-	// result = ViewHelper.getY(this);
-	// }
-	// return result;
-	// }
 
 	/**
 	 * Convenience method for setting Y.

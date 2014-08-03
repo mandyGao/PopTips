@@ -129,7 +129,7 @@ public class GaoActivity extends Activity implements View.OnClickListener,
 		mRedPopTipView.set_width(100);
 		mRedPopTipView.set_height(50);
 		mRedPopTipView.set_arrow_location(ArrowLocation.top_left);
-		mRedPopTipView.set_arrow_width(30);
+		mRedPopTipView.set_arrow_width(20);
 		mRedPopTipView.set_arrow_point_offset(0, 0);
 		// mRedPopTipView.setArrowPointOffset(50,50);
 		mRedPopTipView.set_pop_text("A beautiful Button");
@@ -180,7 +180,7 @@ public class GaoActivity extends Activity implements View.OnClickListener,
 		mBlueDarkPopTipView.set_width(100);
 		mBlueDarkPopTipView.set_height(70);
 		mBlueDarkPopTipView.set_arrow_location(ArrowLocation.top);
-		mBlueDarkPopTipView.set_arrow_width(30);
+		mBlueDarkPopTipView.set_arrow_width(20);
 		mBlueDarkPopTipView.set_pop_text("bule dark!");
 		mBlueDarkPopTipView.set_backgroud(getResources().getColor(
 				R.color.holo_blue_bright));
@@ -262,7 +262,9 @@ public class GaoActivity extends Activity implements View.OnClickListener,
 				addRedPopTipView();
 			} else {
 				mRedPopTipView.hide();
+				mPopTipFrameLayout.removeView(view);
 				mRedPopTipView = null;
+				
 			}
 
 		} else if (id == R.id.activity_main_greentv) {
@@ -321,7 +323,7 @@ public class GaoActivity extends Activity implements View.OnClickListener,
 		} else if (mGreenDarkPopTipView == popTipView) {
 			mGreenDarkPopTipView = null;
 		} else if (mBlueDarkPopTipView == popTipView) {
-			mBlueDarkPopTipView = null;
+			  mBlueDarkPopTipView = null;
 		} 
 	}
 }
