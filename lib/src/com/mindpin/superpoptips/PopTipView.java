@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewManager;
 import android.view.ViewTreeObserver;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -474,12 +476,17 @@ public class PopTipView extends LinearLayout implements
 		}
 		mArrowView.setLayoutParams(arrowlayoutParams);
 		mContentHolder.setLayoutParams(layoutParams);
-		anim.start();
+		
+		ObjectAnimator alpha = ObjectAnimator.ofFloat(this, ALPHA_COMPAT, 0, 0.5f,1);
+		AnimatorSet animatorSet = new AnimatorSet();
+		animatorSet.play(anim).with(alpha);
+		animatorSet.setDuration(500);
+		animatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
+		animatorSet.start();
 	}
 
 	private void setAnimator(String propertyName, float from, float to) {
 		anim = ObjectAnimator.ofFloat(this, propertyName, from, to);
-
 	}
 
 	private void drawTriangleArrow(int startX, int startY, int secondlyLineX,
